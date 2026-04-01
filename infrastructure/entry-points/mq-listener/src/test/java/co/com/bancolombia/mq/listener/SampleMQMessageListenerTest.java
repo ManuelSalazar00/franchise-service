@@ -1,0 +1,32 @@
+package co.com.bancolombia.mq.listener;
+
+import jakarta.jms.JMSException;
+import jakarta.jms.TextMessage;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+class SampleMQMessageListenerTest {
+
+    @Mock
+    private TextMessage textMessage;
+
+    @BeforeEach
+    void setUp(){
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void processTest() throws JMSException {
+        SampleMQMessageListener sampleMQMessageListener = new SampleMQMessageListener();
+        sampleMQMessageListener.process(textMessage);
+
+        verify(textMessage, times(0)).getJMSTimestamp();
+    }
+
+
+}

@@ -1,0 +1,62 @@
+package co.com.bancolombia.consumer;
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
+
+@Service
+public class RestConsumer // implements Gateway from domain
+{
+    private final RestClient restClient;
+
+    public RestConsumer(RestClient restClient) {
+        this.restClient = restClient;
+    }
+
+    // These methods are an example that illustrates the implementation of RestClient.
+    // You should use the methods that you implement from the Gateway from the domain.
+    @CircuitBreaker(name = "testGet"/*, fallbackMethod = "testGetOk"*/) // This name should match with settings name in application.yaml
+    public ObjectResponse testGet() {
+        return restClient
+                .get()
+                .uri("/list-users")
+                .accept(MediaType.APPLICATION_JSON)
+                .headers(headers -> {
+                    headers.setContentType(MediaType.APPLICATION_JSON);
+                    headers.set("HEADER-EXAMPLE", "example-value");
+                })
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {
+                });
+    }
+
+// Possible fallback method
+//    public String testGetOk(Exception exception) {
+//        return restClient
+//                .get()
+//                .uri("/test")
+//                .accept(MediaType.APPLICATION_JSON)
+//                .retrieve()
+//                .body(new ParameterizedTypeReference<>() {
+//                });
+//    }
+
+    @CircuitBreaker(name = "testPost") // This name should match with settings name in application.yaml
+    public ObjectResponse testPost() {
+        ObjectRequest requestBody = ObjectRequest.builder()
+                .val1("exampleval1")
+                .val2("exampleval2")
+                .build();
+
+        return restClient
+                .post()
+                .uri("/create-user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(requestBody)
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {
+                });
+    }
+}

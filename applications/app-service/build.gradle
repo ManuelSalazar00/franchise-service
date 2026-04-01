@@ -1,0 +1,49 @@
+apply plugin: 'org.springframework.boot'
+apply plugin: 'org.owasp.dependencycheck'
+
+dependencies {
+	implementation project(':graphql-api')
+	implementation project(':sqs-listener')
+	testImplementation 'org.springframework:spring-web'
+	implementation project(':api-rest')
+	implementation project(':mq-listener')
+	implementation project(':sqs-sender')
+	implementation 'software.amazon.awssdk:sts'
+	implementation project(':s3-repository')
+	implementation project(':rest-consumer')
+	implementation 'tools.jackson.core:jackson-databind'
+	implementation project(':redis')
+	implementation project(':mq-sender')
+	implementation project(':mongo-repository')
+	implementation 'com.github.bancolombia:aws-secrets-manager-sync:4.5.1'
+	implementation project(':kms-repository')
+	implementation project(':jpa-repository')
+	implementation 'org.reactivecommons.utils:object-mapper:0.1.0'
+	implementation project(':dynamo-db')
+    implementation project(':model')
+    implementation project(':usecase')
+    implementation 'org.springframework.boot:spring-boot-starter'
+    runtimeOnly('org.springframework.boot:spring-boot-devtools')
+    testImplementation 'com.tngtech.archunit:archunit:1.4.1'
+    testImplementation 'tools.jackson.core:jackson-databind'
+}
+
+tasks.register('explodedJar', Copy) {
+    with jar
+    into layout.buildDirectory.dir("exploded")
+}
+
+jar {
+    // To disable the *-plain.jar
+    enabled = false
+}
+
+bootJar {
+    // Sets output jar name
+    archiveFileName = "${project.getParent().getName()}.${archiveExtension.get()}"
+}
+
+dependencyCheck {
+    format = 'JSON'
+    failOnError = false
+}

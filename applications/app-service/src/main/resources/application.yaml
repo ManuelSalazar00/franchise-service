@@ -1,0 +1,111 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: "cleanArchitecture"
+  devtools:
+    add-properties: false
+  h2:
+    console:
+      enabled: true
+      path: "/h2"
+  profiles:
+    include: null
+  datasource:
+    url: "jdbc:h2:mem:test"
+    username: "sa"
+    password: ""
+    driverClassName: "org.h2.Driver"
+  jpa:
+    databasePlatform: "org.hibernate.dialect.H2Dialect"
+  data:
+    mongodb:
+      uri: "mongodb://localhost:27017/test"
+  redis:
+    host: "localhost"
+    port: 6379
+  graphql:
+    graphiql:
+      enabled: false
+aws:
+  dynamodb:
+    endpoint: "http://localhost:8000"
+  region: "us-east-1"
+  secretName: "my-secret"
+adapters:
+  aws:
+    kms:
+      region: "us-east-1"
+      host: "localhost"
+      protocol: "http"
+      port: "4566"
+      keyId: "add-your-key-here"
+commons:
+  jms:
+    output-concurrency: 10
+    output-queue: "DEV.QUEUE.1"
+    producer-ttl: 0
+    reactive: false
+    input-concurrency: 10
+    input-queue: "DEV.QUEUE.2"
+    input-queue-alias: ""
+ibm:
+  mq:
+    channel: "DEV.APP.SVRCONN"
+    user: "app"
+adapter:
+  restconsumer:
+    url: "http://localhost:8080"
+  aws:
+    s3:
+      bucketName: "test"
+      region: "us-east-1"
+      endpoint: "https://s3.localhost.localstack.cloud:4566"
+  sqs:
+    region: "us-east-1"
+    queueUrl: "http://localhost:4566/000000000000/sample"
+    endpoint: "http://localhost:4566 # For localstack only"
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "health"
+  endpoint:
+    health:
+      probes:
+        enabled: true
+resilience4j:
+  circuitbreaker:
+    instances:
+      testGet:
+        registerHealthIndicator: true
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: "2s"
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 10
+        waitDurationInOpenState: "10s"
+      testPost:
+        registerHealthIndicator: true
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: "2s"
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 10
+        waitDurationInOpenState: "10s"
+cors:
+  allowed-origins: "http://localhost:4200,http://localhost:8080"
+entrypoint:
+  sqs:
+    region: "us-east-1"
+    endpoint: "http://localhost:4566"
+    queueUrl: "http://localhost:4566/000000000000/sample"
+    waitTimeSeconds: 20
+    maxNumberOfMessages: 10
+    visibilityTimeoutSeconds: 10
+    numberOfThreads: 1
