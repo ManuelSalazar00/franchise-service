@@ -39,4 +39,10 @@ sonar {
     }
 }
 
+configurations.all {
+    resolutionStrategy {
+        force 'com.fasterxml.jackson.core:jackson-core:2.15.2'
+    }
+}
+
 apply from: './main.gradle'
